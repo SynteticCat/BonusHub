@@ -18,13 +18,38 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="viewPlaceholder" parent="AppTheme.NoActionBar">
-        <!--<item name="android:theme">@style/AppTheme</item>-->
+    <style name="AppTheme.CustomPreference.viewPlaceholder" parent="AppTheme.NoActionBar">
         <item name="android:layout_height">match_parent</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:textColor">@color/viewPlaceholder</item>
         <item name="android:gravity">center</item>
         <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="AppTheme.CustomPreferences.TableCell" parent="AppTheme.CustomPreferences">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginRight">1dp</item>
+        <item name="android:paddingLeft">20dp</item>
+        <item name="android:paddingRight">20dp</item>
+        <item name="android:background">@color/windowBackground</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:inputType">numberDecimal</item>
+    </style>
+
+    <style name="AppTheme.CustomPreferences" parent="Theme.AppCompat">
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:textColorSecondary">@color/colorPrimaryLight</item>
+        <item name="android:windowBackground">@color/windowBackground</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorBackground">@color/windowBackground</item>
     </style>
 
 </resources>
