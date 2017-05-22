@@ -4,10 +4,11 @@ import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TableLayout;
 
 import java.util.TreeMap;
 import java.util.Map;
@@ -19,9 +20,10 @@ public class TablePreferenceLayout extends Fragment {
     private static final String PRICE_MAP_ARG = "price_map";
     private static final String TABLE_ROOT_ARG = "table_root";
     private View rootView; // activity
-    private TableLayout tableRoot; // TableLayout for TableRow's
+    private RecyclerView tableRoot; // TableLayout for TablePreferenceAdapter's
     private FloatingActionButton fab; // fragment fab
     private Map<Float, Float> priceMap; // prices-to-values map - for discount amounts, etc.
+    private TablePreferenceAdapter adapter;
 
     public TablePreferenceLayout() {
         // public constructor required
@@ -52,7 +54,7 @@ public class TablePreferenceLayout extends Fragment {
         // set layout
         rootView = inflater.inflate(getArguments().getInt(LAYOUT_ID_ARG), container, false);
         //find table layout
-        tableRoot = (TableLayout) rootView.findViewById(getArguments().getInt(TABLE_ROOT_ARG));
+        tableRoot = (RecyclerView) rootView.findViewById(getArguments().getInt(TABLE_ROOT_ARG));
         // find FAB
         fab = (FloatingActionButton) rootView.findViewById(getArguments().getInt(FAB_ID_ARG));
         fab.setOnClickListener(new View.OnClickListener() {
@@ -63,19 +65,22 @@ public class TablePreferenceLayout extends Fragment {
         });
         // get list of prices and values for them
         priceMap = (Map<Float, Float>) getArguments().getSerializable(PRICE_MAP_ARG);
-
+        renderTable();
         return rootView;
     }
 
     protected void renderTable() {
-       for (TreeMap.Entry<Float, Float> entry : priceMap.entrySet()) {
-           // TODO
-//           tableRoot.addView(ne);
-       }
+       adapter = new TablePreferenceAdapter(getActivity(), priceMap);
+       tableRoot.setAdapter(adapter);
+       tableRoot.setLayoutManager(new LinearLayoutManager(getActivity()));
     }
 
     protected void onFABClick() {
-        // here add to map
+        priceMap.put(null, null);
+        // find the position of new item in TreeMap for notify the adapter
+        int p = 0;
+        for (; priceMap.keySet().toArray()[p] != null; p++);
+        adapter.notifyItemInserted(p);
     }
 
 }
