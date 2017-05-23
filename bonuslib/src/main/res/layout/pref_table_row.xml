@@ -18,7 +18,7 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:gravity="center_vertical|left"
-            android:style="@style/AppTheme.CustomPreferences.TableCell"
+            style="@style/AppTheme.CustomPreferences.TableCell"
             android:theme="@style/AppTheme.CustomPreferences.TableCell" />
 
         <EditText
@@ -27,7 +27,7 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:gravity="center_vertical|left"
-            android:style="@style/AppTheme.CustomPreferences.TableCell"
+            style="@style/AppTheme.CustomPreferences.TableCell"
             android:theme="@style/AppTheme.CustomPreferences.TableCell" />
 
         <ImageButton

@@ -22,7 +22,7 @@ public class TablePreferenceLayout extends Fragment {
     private View rootView; // activity
     private RecyclerView tableRoot; // TableLayout for TablePreferenceAdapter's
     private FloatingActionButton fab; // fragment fab
-    private Map<Float, Float> priceMap; // prices-to-values map - for discount amounts, etc.
+    private TreeMap<Float, Float> priceMap; // prices-to-values map - for discount amounts, etc.
     private TablePreferenceAdapter adapter;
 
     public TablePreferenceLayout() {
@@ -64,7 +64,7 @@ public class TablePreferenceLayout extends Fragment {
             }
         });
         // get list of prices and values for them
-        priceMap = (Map<Float, Float>) getArguments().getSerializable(PRICE_MAP_ARG);
+        priceMap = (TreeMap<Float, Float>) getArguments().getSerializable(PRICE_MAP_ARG);
         renderTable();
         return rootView;
     }
@@ -81,6 +81,7 @@ public class TablePreferenceLayout extends Fragment {
         int p = 0;
         for (; priceMap.keySet().toArray()[p] != null; p++);
         adapter.notifyItemInserted(p);
+        tableRoot.scrollToPosition(p);
     }
 
 }
