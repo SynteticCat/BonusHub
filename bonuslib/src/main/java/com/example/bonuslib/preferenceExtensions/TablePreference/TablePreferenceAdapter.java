@@ -96,7 +96,7 @@ public class TablePreferenceAdapter extends RecyclerView.Adapter<TablePreference
 
     @Override
     public int getItemCount() {
-        return priceMap.size();
+        return priceMap == null ? 0 : priceMap.size();
     }
 
     public void removeItem(final ViewHolder holder) {

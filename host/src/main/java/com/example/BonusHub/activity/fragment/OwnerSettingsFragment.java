@@ -4,6 +4,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceFragmentCompat;
@@ -12,6 +14,8 @@ import android.util.Log;
 
 import com.example.bonuslib.preferenceExtensions.NumberPreference.NumberPickerPreferenceDialog;
 import com.example.bonuslib.preferenceExtensions.NumberPreference.NumberPreference;
+import com.example.bonuslib.preferenceExtensions.TablePreference.TablePreference;
+import com.example.bonuslib.preferenceExtensions.TablePreference.TablePreferenceLayout;
 import com.example.timur.BonusHub.R;
 
 import java.util.Map;
@@ -106,6 +110,14 @@ public class OwnerSettingsFragment extends PreferenceFragmentCompat implements S
                         getResources().getStringArray(R.array.bonus_system)[bst]);
         // show specialized settings
         addPreferencesFromResource(TYPED_SETTINGS[bst]);
+//        if (bst == 2) {
+//            FragmentManager fm = getFragmentManager();
+//            FragmentTransaction ft = fm.beginTransaction();
+//            TablePreferenceLayout fragment = new TablePreferenceLayout();
+//            ft.replace(R.id.container_body, fragment);
+//            ft.addToBackStack(null);
+//            ft.commit();
+//        }
     }
 
     // needed for custom dialog preference to work
@@ -116,11 +128,35 @@ public class OwnerSettingsFragment extends PreferenceFragmentCompat implements S
             dialogFragment = NumberPickerPreferenceDialog.newInstance(preference.getKey());
         }
 
+//        if (preference instanceof TablePreference) {
+//            dialogFragment = TablePreferenceLayout.newInstance(preference.getKey());
+//        }
+
         if (dialogFragment != null) {
             dialogFragment.setTargetFragment(this, 0);
             dialogFragment.show(this.getFragmentManager(), THIS_FRAGMENT);
         } else {
             super.onDisplayPreferenceDialog(preference);
         }
+    }
+
+    @Override
+    public boolean onPreferenceTreeClick(Preference preference) {
+        Fragment goalFragment = null;
+        if (preference instanceof TablePreference) {
+            goalFragment = TablePreferenceLayout.newInstance(preference.getKey());
+        }
+
+        if (goalFragment != null) {
+            goalFragment.setTargetFragment(this, 0);
+            FragmentManager fm = getFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+//            ft.replace(getFragmentContainerResI(), fragment, fragment.getClass().getSimpleName());
+            ft.add(goalFragment, getTag());
+            ft.show(goalFragment);
+            ft.commit();
+        }
+
+        return super.onPreferenceTreeClick(preference);
     }
 }

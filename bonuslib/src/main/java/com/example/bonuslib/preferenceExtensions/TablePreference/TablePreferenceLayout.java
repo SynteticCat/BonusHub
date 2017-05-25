@@ -2,24 +2,27 @@ package com.example.bonuslib.preferenceExtensions.TablePreference;
 
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.preference.DialogPreference;
+import android.support.v7.preference.PreferenceDialogFragmentCompat;
+import android.support.v7.preference.PreferenceFragmentCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.bonuslib.R;
+
 import java.util.TreeMap;
 import java.util.Map;
 
 public class TablePreferenceLayout extends Fragment {
-
-    private static final String LAYOUT_ID_ARG = "layout_id";
-    private static final String FAB_ID_ARG = "fab_id";
-    private static final String PRICE_MAP_ARG = "price_map";
-    private static final String TABLE_ROOT_ARG = "table_root";
-    private View rootView; // activity
+    private final static String KEY = "table_pref_key";
+    private TablePreference tablePref;
+    private CoordinatorLayout rootView;
     private RecyclerView tableRoot; // TableLayout for TablePreferenceAdapter's
     private FloatingActionButton fab; // fragment fab
     private TreeMap<Float, Float> priceMap; // prices-to-values map - for discount amounts, etc.
@@ -29,16 +32,10 @@ public class TablePreferenceLayout extends Fragment {
         // public constructor required
     }
 
-    public static TablePreferenceLayout newInstance(@IdRes int layoutId,
-                                                    @IdRes int tableRootId,
-                                                    @IdRes int fabId,
-                                                    TreeMap<Float, Float> priceMap) {
+    public static TablePreferenceLayout newInstance(String key) {
         TablePreferenceLayout fragment = new TablePreferenceLayout();
         Bundle args = new Bundle();
-        args.putInt(LAYOUT_ID_ARG, layoutId);
-        args.putInt(TABLE_ROOT_ARG, tableRootId);
-        args.putInt(FAB_ID_ARG, fabId);
-        args.putSerializable(PRICE_MAP_ARG, priceMap);
+        args.putString(KEY, key);
         fragment.setArguments(args);
         return fragment;
     }
@@ -48,15 +45,36 @@ public class TablePreferenceLayout extends Fragment {
         super.onCreate(savedInstanceState);
     }
 
+//    @Override
+//    public void onBindDialogView(View rootView) {
+//        super.onBindDialogView(rootView);
+//        //find table layout
+//        tableRoot = (RecyclerView) rootView.findViewById(R.id.prices_rv);
+//        // find FAB
+//        fab = (FloatingActionButton) rootView.findViewById(R.id.table_fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                onFABClick();
+//            }
+//        });
+//        // get list of prices and values for them
+//        if (getPreference() instanceof TablePreference) {
+//            TablePreference pref = (TablePreference) getPreference();
+//            priceMap = pref.getJson();
+//        }
+//        renderTable();
+//    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // set layout
-        rootView = inflater.inflate(getArguments().getInt(LAYOUT_ID_ARG), container, false);
+        rootView = (CoordinatorLayout) inflater.inflate(R.layout.pref_table, container, false);
         //find table layout
-        tableRoot = (RecyclerView) rootView.findViewById(getArguments().getInt(TABLE_ROOT_ARG));
+        tableRoot = (RecyclerView) rootView.findViewById(R.id.prices_rv);
         // find FAB
-        fab = (FloatingActionButton) rootView.findViewById(getArguments().getInt(FAB_ID_ARG));
+        fab = (FloatingActionButton) rootView.findViewById(R.id.table_fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,7 +82,10 @@ public class TablePreferenceLayout extends Fragment {
             }
         });
         // get list of prices and values for them
-        priceMap = (TreeMap<Float, Float>) getArguments().getSerializable(PRICE_MAP_ARG);
+//        if (getPreference() instanceof TablePreference) {
+//            TablePreference pref = (TablePreference) getPreference();
+//            priceMap = pref.getJson();
+//        }
         renderTable();
         return rootView;
     }
@@ -76,12 +97,44 @@ public class TablePreferenceLayout extends Fragment {
     }
 
     protected void onFABClick() {
-        priceMap.put(null, null);
+        priceMap.put(new Float(0.0), null);
         // find the position of new item in TreeMap for notify the adapter
         int p = 0;
-        for (; priceMap.keySet().toArray()[p] != null; p++);
+        for (; !priceMap.keySet().toArray()[p].equals(new Float(0.0)); p++);
         adapter.notifyItemInserted(p);
         tableRoot.scrollToPosition(p);
     }
 
+//    // save value on dialog closed
+//    @Override
+//    public void onDialogClosed(boolean positiveResult) {
+//        if (getPreference() instanceof TablePreference) {
+//            TablePreference tp = (TablePreference) getPreference();
+//            if (tp.callChangeListener(priceMap)) {
+//                tp.setJson(priceMap);
+//            }
+//        }
+//    }
+
+    // save value on dialog closed
+    @Override
+    public void onPause() {
+        super.onPause();
+//        if (getPreference() instanceof TablePreference) {
+//            TablePreference tp = (TablePreference) getPreference();
+//            if (tp.callChangeListener(priceMap)) {
+//                tp.setJson(priceMap);
+//            }
+//        }
+    }
+
+//    public TablePreference getPreference() {
+//        if (tablePref == null) {
+//            final String key = getArguments().getString(KEY);
+//            final TablePreference.TargetFragment fragment =
+//                    (TablePreference.TargetFragment) getTargetFragment();
+//            tablePref = (TablePreference) fragment.findPreference(key);
+//        }
+//        return tablePref;
+//    }
 }
